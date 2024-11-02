@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stat Selection and Graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/baseball.css') }}">
+    <style>
+        #stat_dropdown {
+            display: none;
+        }
+
+        #stat_dropdown {
+            width: 200px;
+            height: 120px;
+            overflow-y: scroll;
+        }
+
+        .image-container {
+            max-width: 50%;
+            margin: 0 auto;
+            border: 2px solid black;
+            padding: 10px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Form to select stat and player -->
+    <form id="graphForm">
+        <input id="input0" class="inputs" name="stat" placeholder="Stat">
+        <select id="stat_dropdown" size="2">
+            <option value="0">gamesplayed</option>
+            <option value="1">flyouts</option>
+            <option value="2">groundouts</option>
+            <option value="3">airouts</option>
+            <option value="4">runs</option>
+            <option value="5">doubles</option>
+            <option value="6">triples</option>
+            <option value="7">homeruns</option>
+            <option value="8">strikeouts</option>
+            <option value="9">baseonballs</option>
+            <option value="10">intentionalwalks</option>
+            <option value="11">hits</option>
+            <option value="12">hitbypitch</option>
+            <option value="13">avg</option>
+            <option value="14">atbats</option>
+            <option value="15">obp</option>
+            <option value="16">slg</option>
+            <option value="17">ops</option>
+            <option value="18">caughtstealing</option>
+            <option value="19">stolenbases</option>
+            <option value="20">stolenbasepercentage</option>
+            <option value="21">groundintodoubleplay</option>
+            <option value="22">groundintotripleplay</option>
+            <option value="23">numberofpitches</option>
+            <option value="24">plateappearances</option>
+            <option value="25">totalbases</option>
+            <option value="26">rbi</option>
+            <option value="27">leftonbases</option>
+            <option value="28">sacbunts</option>
+            <option value="29">sacflies</option>
+            <option value="30">babip</option>
+            <option value="31">groundoutstoairouts</option>
+            <option value="32">catchersinterference</option>
+            <option value="33">atbatsperhomerun</option>
+        </select>
+        <input id="input1" class="inputs" name="name" placeholder="Name of Player">
+        <button type="submit">GO!</button>
+    </form>
+
+    <!-- Container to display the image -->
+    <div class="image-container">
+        <img id="graphImage" src="" alt="Matplotlib Plot">
+    </div>
+
+    <script>
+        // Reference input and dropdown elements
+        const inputBox = document.getElementById('input0');
+        const dropdown = document.getElementById('stat_dropdown');
+        const form = document.getElementById('graphForm');
+        const graphImage = document.getElementById('graphImage');
+
+        // Show the dropdown when input is focused
+        inputBox.addEventListener('focus', () => {
+            dropdown.style.display = 'block';
+        });
+
+        // Hide the dropdown on blur (after a delay)
+        inputBox.addEventListener('blur', () => {
+            setTimeout(() => {
+                dropdown.style.display = 'none';
+            }, 200);
+        });
+
+        // Set the input value to the selected dropdown option
+        dropdown.addEventListener('change', () => {
+            inputBox.value = dropdown.options[dropdown.selectedIndex].text;
+            dropdown.style.display = 'none';  // Hide dropdown after selection
+        });
+
+        // Handle form submission with AJAX
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Create a FormData object from the form fields
+            const formData = new FormData(form);
+
+            // Send an AJAX POST request to the /graph route
+            fetch('/graph', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())  // Convert the response to a Blob (image data)
+            .then(blob => {
+                // Create a URL for the Blob and update the image src
+                const imageUrl = URL.createObjectURL(blob);
+                graphImage.src = imageUrl; // Update the image with the new graph
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+</body>
+</html>
