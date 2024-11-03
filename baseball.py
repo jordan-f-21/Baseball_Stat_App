@@ -52,13 +52,6 @@ def showGraph():
         stat = request.form['stat']
         playerName = request.form['name']
         x, y = setX_and_setY_axes(getStat(stat), getId(playerName))
-        '''
-        plt.bar(x, y)
-        plt.title(playerName + "'s " + stat)
-        plt.xlabel("Season")
-        plt.ylabel("# of " + stat)
-        plt.show()
-        '''
         fig, ax = plt.subplots()
         ax.bar(x, y)
         ax.set_title(playerName + "'s " + stat)
