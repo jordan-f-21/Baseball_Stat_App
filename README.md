@@ -7,7 +7,7 @@ This is a simple, responsive web application built with Python, Flask, JavaScrip
 
 #### Execute Script
 ```
-python app.py
+python baseball.py
 ```
 #### Flask URL
 ```
